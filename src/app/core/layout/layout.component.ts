@@ -1,9 +1,9 @@
 import { Component, ChangeDetectionStrategy } from '@angular/core';
-import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
+import { RouterLink, RouterOutlet } from '@angular/router';
 
 @Component({
   selector: 'app-layout',
-  imports: [RouterOutlet, RouterLink, RouterLinkActive],
+  imports: [RouterOutlet, RouterLink],
   templateUrl: './layout.component.html',
   styleUrl: './layout.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush
@@ -11,10 +11,7 @@ import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 export class LayoutComponent {
   menu = [
     { label: 'Accueil', icon: '📊', link: '/' },
-    { label: 'Projets', icon: '📁', link: '/projects' },
-    { label: 'Générateurs', icon: '⚙️', link: '/generators' },
-    { label: 'Modèles', icon: '👥', link: '/models' },
-    { label: 'Rapports', icon: '📈', link: '/reports' },
-    { label: 'Intégrations', icon: '🔗', link: '/integrations' }
+    { label: 'Entité 1', icon: '📁', link: '/entity1' },
+    { label: 'Entité 2', icon: '⚙️', link: '/entity2' }
   ];
 }
