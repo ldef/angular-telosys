@@ -1,11 +1,13 @@
 import { Component, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { RouterLink } from '@angular/router';
+
 import { Driver } from '../driver';
 import { DriverService } from '../driver.service';
 
 @Component({
   selector: 'app-drivers',
-  imports: [CommonModule],
+  imports: [CommonModule, RouterLink],
   templateUrl: './drivers.component.html',
   styleUrl: './drivers.component.scss'
 })
