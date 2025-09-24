@@ -10,8 +10,7 @@ import { RouterLink, RouterOutlet } from '@angular/router';
 })
 export class LayoutComponent {
   menu = [
-    { label: 'Accueil', icon: '📊', link: '/' },
-    { label: 'Entité 1', icon: '📁', link: '/entity1' },
-    { label: 'Entité 2', icon: '⚙️', link: '/entity2' }
+    { label: 'Home', icon: '🏠', link: '/' },
+    { label: 'Drivers', icon: '🚗', link: '/drivers' }
   ];
 }

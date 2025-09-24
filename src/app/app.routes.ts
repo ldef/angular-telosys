@@ -6,6 +6,7 @@ export const routes: Routes = [
   {
     path: '', component: LayoutComponent, children: [
       { path: '', component: HomeComponent },
+      { path: 'drivers', loadChildren: () => import('@features/drivers/driver.route').then(m => m.routes) },
     ]
   }
 ];
