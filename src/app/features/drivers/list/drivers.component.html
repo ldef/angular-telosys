@@ -9,13 +9,15 @@
       </div>
     </div>
   } @else {
-  <table class="table">
+
+  <table class="table table-striped mt-3">
     <thead>
       <tr>
         <th>ID</th>
         <th>Name</th>
         <th>Birth Date</th>
         <th>Certified</th>
+        <th>Actions</th>
       </tr>
     </thead>
     <tbody>
@@ -24,7 +26,29 @@
           <td>{{ driver.id }}</td>
           <td>{{ driver.firstName }} {{ driver.lastName }}</td>
           <td>{{ driver.birthDate | date:'shortDate' }}</td>
-          <td>{{ driver.certified ? 'Certified' : 'Not Certified' }}</td>
+          <td>
+            <span>
+              {{ driver.certified ? 'Certified' : 'Not Certified' }}
+            </span>
+          </td>
+          <td>
+            <div class="btn-group btn-group-sm" role="group">
+              <button 
+                type="button" 
+                class="btn btn-outline-primary"
+                (click)="editDriver(driver.id)"
+                title="Edit Driver">
+                Edit
+              </button>
+              <button 
+                type="button" 
+                class="btn btn-outline-danger"
+                (click)="deleteDriver(driver.id)"
+                title="Delete Driver">
+                Delete
+              </button>
+            </div>
+          </td>
         </tr>
       }
     </tbody>

@@ -19,10 +19,6 @@ export class DriverService extends ApiService {
   getDrivers(): Observable<Driver[]> {
     return this.http.get<Driver[]>(this.apiUrl)
       .pipe(
-        map(drivers => drivers.map(driver => ({
-          ...driver,
-          birthDate: new Date(driver.birthDate)
-        }))),
         catchError(this.handleError)
       );
   }
@@ -34,10 +30,6 @@ export class DriverService extends ApiService {
     const url = `${this.apiUrl}/${id}`;
     return this.http.get<Driver>(url)
       .pipe(
-        map(driver => ({
-          ...driver,
-          birthDate: new Date(driver.birthDate)
-        })),
         catchError(this.handleError)
       );
   }
@@ -48,10 +40,6 @@ export class DriverService extends ApiService {
   createDriver(driver: Omit<Driver, 'id'>): Observable<Driver> {
     return this.http.post<Driver>(this.apiUrl, driver)
       .pipe(
-        map(createdDriver => ({
-          ...createdDriver,
-          birthDate: new Date(createdDriver.birthDate)
-        })),
         catchError(this.handleError)
       );
   }
@@ -63,10 +51,6 @@ export class DriverService extends ApiService {
     const url = `${this.apiUrl}/${driver.id}`;
     return this.http.put<Driver>(url, driver)
       .pipe(
-        map(updatedDriver => ({
-          ...updatedDriver,
-          birthDate: new Date(updatedDriver.birthDate)
-        })),
         catchError(this.handleError)
       );
   }

@@ -1,5 +1,5 @@
 <div class="container-fluid p-4">
-  <h2 class="mb-4">Create New Driver</h2>
+  <h2 class="mb-4">{{ isEditMode ? 'Edit Driver' : 'Create New Driver' }}</h2>
     
   <!-- Submit Error Message -->
    @if(submitError) {
@@ -84,7 +84,7 @@
         @if(isSubmitting) {
           <span class="spinner-border spinner-border-sm me-2" role="status"></span>
         }
-        {{ isSubmitting ? 'Creating...' : 'Create Driver' }}
+        {{ isSubmitting ? (isEditMode ? 'Updating...' : 'Creating...') : (isEditMode ? 'Update Driver' : 'Create Driver') }}
       </button>
     </div>
   </form>
