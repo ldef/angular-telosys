@@ -38,7 +38,7 @@ export class ApiService {
       }
     }
 
-    console.error('DriverService Error:', errorMessage, error);
+    console.error('Error:', errorMessage, error);
     return throwError(() => new Error(errorMessage));
   }
 }

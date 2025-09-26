@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { InMemoryDbService } from 'angular-in-memory-web-api';
 
 import { Driver } from '@features/drivers/driver';
+import { Company } from '@features/companies/company';
 
 
 @Injectable({
@@ -20,15 +21,26 @@ export class MockService implements InMemoryDbService {
         { id: 18, firstName: 'Magma', lastName: 'Davis', birthDate: new Date('1975-08-19'), certified: true },
         { id: 19, firstName: 'Tornado', lastName: 'Rodriguez', birthDate: new Date('1991-04-04'), certified: false },
     ];
-    return {drivers};
+    const companies: Company[] = [
+      { id: 1, name: 'Acura' },
+      { id: 2, name: 'BMW' },
+      { id: 3, name: 'Mercedes' },
+      { id: 4, name: 'Toyota' },
+      { id: 5, name: 'Ford' },
+      { id: 6, name: 'Chevrolet' },
+      { id: 7, name: 'Honda' },
+      { id: 8, name: 'Nissan' },
+      { id: 9, name: 'Volkswagen' },
+      { id: 10, name: 'Hyundai' }
+    ];
+    return {drivers, companies};
   }
 
-  // Overrides the genId method to ensure that a hero always has an id.
-  // If the heroes array is empty,
+  // Overrides the genId method to ensure that a entity always has an id.
   // the method below returns the initial number (11).
-  // if the heroes array is not empty, the method below returns the highest
-  // driver id + 1.
-  genId(drivers: Driver[]): number {
-    return drivers.length > 0 ? Math.max(...drivers.map(driver => driver.id)) + 1 : 11;
+  // if the entity array is not empty, the method below returns the highest
+  // entity id + 1.
+  genId(entity: any[]): number {
+    return entity.length > 0 ? Math.max(...entity.map(e => e.id)) + 1 : 11;
   }
 }

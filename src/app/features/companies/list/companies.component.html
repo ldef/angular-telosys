@@ -1,0 +1,48 @@
+<div class="d-flex justify-content-between">
+  <span class="h2">Companies Management</span>
+  <button type="button" class="btn btn-primary" routerLink="/companies/new">Add New Company</button>
+</div>
+@if(loading()) {
+  <div class="d-flex justify-content-center">
+    <div class="spinner-border" role="status">
+      <span class="sr-only"></span>
+    </div>
+  </div>
+} @else {
+
+<table class="table table-striped mt-3">
+  <thead>
+    <tr>
+      <th>ID</th>
+      <th>Name</th>
+      <th>Actions</th>
+    </tr>
+  </thead>
+  <tbody>
+    @for(company of companies(); track company.id) {
+      <tr>
+        <td>{{ company.id }}</td>
+        <td>{{ company.name }}</td>
+        <td>
+          <div class="btn-group btn-group-sm" role="group">
+            <button 
+              type="button" 
+              class="btn btn-outline-primary"
+              (click)="editCompany(company.id)"
+              title="Edit Company">
+              Edit
+            </button>
+            <button 
+              type="button" 
+              class="btn btn-outline-danger"
+              (click)="deleteCompany(company.id)"
+              title="Delete Company">
+              Delete
+            </button>
+          </div>
+        </td>
+      </tr>
+    }
+  </tbody>
+</table>
+}
