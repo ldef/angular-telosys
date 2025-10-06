@@ -1,0 +1,58 @@
+<div class="d-flex justify-content-between">
+  <span class="h2">Brands Management</span>
+  <button type="button" class="btn btn-primary" routerLink="/brands/new">Add New Brand</button>
+</div>
+@if(loading()) {
+  <div class="d-flex justify-content-center">
+    <div class="spinner-border" role="status">
+      <span class="sr-only"></span>
+    </div>
+  </div>
+} @else {
+
+@if(error()) {
+  <div class="alert alert-danger mt-3" role="alert">
+    {{ error() }}
+  </div>
+}
+
+<table class="table table-striped mt-3">
+  <thead>
+    <tr>
+      <th>Code</th>
+      <th>Brand Name</th>
+      <th>Company</th>
+      <th>Actions</th>
+    </tr>
+  </thead>
+  <tbody>
+    @for(brand of brands(); track brand.code) {
+      <tr>
+        <td>
+          <span class="badge bg-primary">{{ brand.code }}</span>
+        </td>
+        <td>{{ brand.name }}</td>
+        <td>{{ brand.company.name }}</td>
+        <td>
+          <div class="btn-group btn-group-sm" role="group">
+            <button 
+              type="button" 
+              class="btn btn-outline-primary"
+              (click)="editBrand(brand.code)"
+              title="Edit Brand">
+              Edit
+            </button>
+            <button 
+              type="button" 
+              class="btn btn-outline-danger"
+              (click)="deleteBrand(brand.code)"
+              title="Delete Brand">
+              Delete
+            </button>
+          </div>
+        </td>
+      </tr>
+    }
+  </tbody>
+</table>
+}

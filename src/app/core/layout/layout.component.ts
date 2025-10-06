@@ -12,6 +12,7 @@ export class LayoutComponent {
   menu = [
     { label: 'Home', icon: '🏠', link: '/' },
     { label: 'Drivers', icon: '🚗', link: '/drivers' },
-    { label: 'Companies', icon: '🏢', link: '/companies' }
+    { label: 'Companies', icon: '🏢', link: '/companies' },
+    { label: 'Brands', icon: '🏷️', link: '/brands' }
   ];
 }

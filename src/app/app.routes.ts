@@ -8,6 +8,7 @@ export const routes: Routes = [
       { path: '', component: HomeComponent },
       { path: 'drivers', loadChildren: () => import('@features/drivers/driver.route').then(m => m.routes) },
       { path: 'companies', loadChildren: () => import('@features/companies/company.route').then(m => m.routes) },
+      { path: 'brands', loadChildren: () => import('@features/brands/brand.route').then(m => m.routes) },
     ]
   }
 ];

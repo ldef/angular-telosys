@@ -3,6 +3,7 @@ import { InMemoryDbService } from 'angular-in-memory-web-api';
 
 import { Driver } from '@features/drivers/driver';
 import { Company } from '@features/companies/company';
+import { Brand } from '@features/brands/brand';
 
 
 @Injectable({
@@ -22,18 +23,20 @@ export class MockService implements InMemoryDbService {
         { id: 19, firstName: 'Tornado', lastName: 'Rodriguez', birthDate: new Date('1991-04-04'), certified: false },
     ];
     const companies: Company[] = [
-      { id: 1, name: 'Acura' },
-      { id: 2, name: 'BMW' },
-      { id: 3, name: 'Mercedes' },
-      { id: 4, name: 'Toyota' },
-      { id: 5, name: 'Ford' },
-      { id: 6, name: 'Chevrolet' },
-      { id: 7, name: 'Honda' },
-      { id: 8, name: 'Nissan' },
-      { id: 9, name: 'Volkswagen' },
-      { id: 10, name: 'Hyundai' }
+      { id: 1, name: 'Stellantis' },
+      { id: 2, name: 'General Motors' },
+      { id: 3, name: 'Ford' },
+      { id: 4, name: 'Porsche SE' }
     ];
-    return {drivers, companies};
+    const brands: Brand[] = [
+      { code: 'Pgt', name: 'Peugeot', company: companies[0] },
+      { code: 'Cit', name: 'Citroën', company: companies[0] },
+      { code: 'Che', name: 'Chevrolet', company: companies[1] },
+      { code: 'Cad', name: 'Cadillac', company: companies[1] },
+      { code: 'For', name: 'Ford', company: companies[2] },
+      { code: 'Pse', name: 'Porsche', company: companies[3] }
+    ];
+    return {drivers, companies, brands};
   }
 
   // Overrides the genId method to ensure that a entity always has an id.
