@@ -9,8 +9,7 @@ import { catchError } from 'rxjs';
 @Component({
   selector: 'app-drivers',
   imports: [CommonModule, RouterLink],
-  templateUrl: './drivers.component.html',
-  styleUrl: './drivers.component.scss'
+  templateUrl: './drivers.html'
 })
 export class DriversComponent implements OnInit {
   drivers = signal<Driver[]>([]);

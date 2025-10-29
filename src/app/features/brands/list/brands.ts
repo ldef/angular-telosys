@@ -1,4 +1,4 @@
-import { Component, inject, OnInit, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink, Router } from '@angular/router';
 
@@ -9,7 +9,8 @@ import { catchError } from 'rxjs';
 @Component({
   selector: 'app-brands',
   imports: [CommonModule, RouterLink],
-  templateUrl: './brands.component.html'
+  templateUrl: './brands.html',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class BrandsComponent implements OnInit {
   brands = signal<Brand[]>([]);

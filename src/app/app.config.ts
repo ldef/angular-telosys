@@ -1,10 +1,10 @@
-import { ApplicationConfig, importProvidersFrom, provideZoneChangeDetection } from '@angular/core';
+import { ApplicationConfig, importProvidersFrom, provideZoneChangeDetection, provideZonelessChangeDetection } from '@angular/core';
 import { provideRouter } from '@angular/router';
 import { InMemoryWebApiModule } from 'angular-in-memory-web-api';
 
 import { routes } from './app.routes';
 import { provideHttpClient } from '@angular/common/http';
-import { MockService } from '@shared/mock.service';
+import { MockService } from '@shared/mock';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -12,6 +12,6 @@ export const appConfig: ApplicationConfig = {
     provideZoneChangeDetection({ eventCoalescing: true }),
     provideRouter(routes),
     // Mock backend
-    importProvidersFrom(InMemoryWebApiModule.forRoot(MockService, { delay: 1000 })),
+    importProvidersFrom(InMemoryWebApiModule.forRoot(MockService, { delay: 1000 }))
   ]
 };

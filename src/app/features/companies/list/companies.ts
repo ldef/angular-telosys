@@ -9,7 +9,7 @@ import { catchError } from 'rxjs';
 @Component({
   selector: 'app-companies',
   imports: [CommonModule, RouterLink],
-  templateUrl: './companies.component.html'
+  templateUrl: './companies.html'
 })
 export class CompaniesComponent implements OnInit {
   companies = signal<Company[]>([]);

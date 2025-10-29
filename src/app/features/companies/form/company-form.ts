@@ -2,73 +2,62 @@ import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
-import { DriverService } from '../driver.service';
-import { Driver } from '../driver';
+import { CompanyService } from '../company.service';
 import { catchError } from 'rxjs';
 
 @Component({
-  selector: 'app-driver-form',
+  selector: 'app-company-form',
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule],
-  templateUrl: './driver-form.component.html'
+  templateUrl: './company-form.html'
 })
-export class DriverFormComponent implements OnInit {
-  driverForm: FormGroup = null!;
+export class CompanyFormComponent implements OnInit {
+  companyForm: FormGroup = null!;
   submitError: string | null = null;
-  driverId: number | null = null;
+  companyId: number | null = null;
   isEditMode = false;
   isSubmitting = false;
 
   fb = inject(FormBuilder);
-  driverService = inject(DriverService);
+  companyService = inject(CompanyService);
   router = inject(Router);
   route = inject(ActivatedRoute);
 
   ngOnInit(): void {
-    this.driverForm = this.createForm();
+    this.companyForm = this.createForm();
     // Check if we're in edit mode
     const id = this.route.snapshot.paramMap.get('id');
     if (id) {
-      this.driverId = +id;
+      this.companyId = +id;
       this.isEditMode = true;
-      this.loadDriver(this.driverId);
+      this.loadCompany(this.companyId);
     }
   }
 
-  private loadDriver(id: number): void {
-    this.driverService.getDriver(id).subscribe((driver) => {
-      const birthDate = new Date(driver.birthDate).toISOString().substring(0, 10);
-      this.driverForm.patchValue({ ...driver, birthDate });
+  private loadCompany(id: number): void {
+    this.companyService.getCompany(id).subscribe((company) => {
+      this.companyForm.patchValue(company);
     });
   }
 
   private createForm(): FormGroup {
     return this.fb.group({
-      firstName: ['', [
+      name: ['', [
         Validators.required,
         Validators.maxLength(20)
-      ]],
-      lastName: ['', [
-        Validators.required,
-        Validators.maxLength(20)
-      ]],
-      birthDate: ['', [
-        Validators.required
-      ]],
-      certified: [false]
+      ]]
     });
   }
 
   onSubmit(): void {
-    if (this.driverForm.valid && !this.isSubmitting) {
+    if (this.companyForm.valid && !this.isSubmitting) {
       this.isSubmitting = true;
       this.submitError = null;
 
-      const formValue = this.driverForm.value;
-      formValue.birthDate = new Date(formValue.birthDate);
+      const formValue = this.companyForm.value;
       const endpoint = this.isEditMode
-        ? this.driverService.updateDriver({ ...formValue, id: this.driverId })
-        : this.driverService.createDriver(formValue);
+        ? this.companyService.updateCompany({ ...formValue, id: this.companyId })
+        : this.companyService.createCompany(formValue);
 
       endpoint.pipe(
         catchError((error) => {
@@ -79,12 +68,12 @@ export class DriverFormComponent implements OnInit {
         })
       ).subscribe(() => {
         this.isSubmitting = false;
-        this.router.navigate(['/drivers']);
+        this.router.navigate(['/companies']);
       });
     }
   }
 
   onCancel(): void {
-    this.router.navigate(['/drivers']);
+    this.router.navigate(['/companies']);
   }
 }

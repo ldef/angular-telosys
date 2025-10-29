@@ -1,9 +1,9 @@
 import { inject, Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { catchError, map } from 'rxjs/operators';
+import { catchError } from 'rxjs/operators';
 import { Company } from './company';
-import { ApiService } from '@shared/api.service';
+import { ApiService } from '@shared/api';
 
 @Injectable({
   providedIn: 'root'

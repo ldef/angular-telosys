@@ -12,7 +12,7 @@ import { CompanyService } from '@features/companies/company.service';
   selector: 'app-brand-form',
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule],
-  templateUrl: './brand-form.component.html'
+  templateUrl: './brand-form.html'
 })
 export class BrandFormComponent implements OnInit {
   brandForm: FormGroup = null!;

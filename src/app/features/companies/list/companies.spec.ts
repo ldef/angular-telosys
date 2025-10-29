@@ -3,7 +3,7 @@ import { provideHttpClient } from '@angular/common/http';
 import { provideRouter } from '@angular/router';
 import { of } from 'rxjs';
 
-import { CompaniesComponent } from './companies.component';
+import { CompaniesComponent } from './companies';
 import { CompanyService } from '../company.service';
 
 describe('CompaniesComponent', () => {

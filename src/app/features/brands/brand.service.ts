@@ -1,10 +1,9 @@
 import { inject, Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { catchError, map } from 'rxjs/operators';
+import { catchError } from 'rxjs/operators';
 import { Brand } from './brand';
-import { Company } from '../companies/company';
-import { ApiService } from '@shared/api.service';
+import { ApiService } from '@shared/api';
 
 @Injectable({
   providedIn: 'root'
@@ -48,7 +47,7 @@ export class BrandService extends ApiService {
   /**
    * Update an existing brand
    */
-  updateBrand(brand: Brand): Observable<Brand> {
+  updateBrand(brand: Brand, ): Observable<Brand> {
     const url = `${this.apiUrl}/${brand.code}`;
     return this.http.put<Brand>(url, brand)
       .pipe(

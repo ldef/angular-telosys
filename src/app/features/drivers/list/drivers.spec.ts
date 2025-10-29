@@ -3,7 +3,7 @@ import { provideHttpClient } from '@angular/common/http';
 import { provideRouter } from '@angular/router';
 import { of } from 'rxjs';
 
-import { DriversComponent } from './drivers.component';
+import { DriversComponent } from './drivers';
 import { DriverService } from '../driver.service';
 
 describe('DriversComponent', () => {
