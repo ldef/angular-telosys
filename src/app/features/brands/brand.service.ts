@@ -3,12 +3,11 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { Brand } from './brand';
-import { ApiService } from '@shared/api';
 
 @Injectable({
   providedIn: 'root'
 })
-export class BrandService extends ApiService {
+export class BrandService {
   private readonly apiUrl = 'api/brands';
 
   http = inject(HttpClient);
@@ -17,10 +16,7 @@ export class BrandService extends ApiService {
    * Get all brands with their companies
    */
   getBrands(): Observable<Brand[]> {
-    return this.http.get<Brand[]>(this.apiUrl)
-      .pipe(
-        catchError(this.handleError)
-      );
+    return this.http.get<Brand[]>(this.apiUrl);
   }
 
   /**
@@ -28,20 +24,14 @@ export class BrandService extends ApiService {
    */
   getBrand(code: string): Observable<Brand> {
     const url = `${this.apiUrl}/${code}`;
-    return this.http.get<Brand>(url)
-      .pipe(
-        catchError(this.handleError)
-      );
+    return this.http.get<Brand>(url);
   }
 
   /**
    * Create a new brand
    */
   createBrand(brand: Brand): Observable<Brand> {
-    return this.http.post<Brand>(this.apiUrl, brand)
-      .pipe(
-        catchError(this.handleError)
-      );
+    return this.http.post<Brand>(this.apiUrl, brand);
   }
 
   /**
@@ -49,10 +39,7 @@ export class BrandService extends ApiService {
    */
   updateBrand(brand: Brand, ): Observable<Brand> {
     const url = `${this.apiUrl}/${brand.code}`;
-    return this.http.put<Brand>(url, brand)
-      .pipe(
-        catchError(this.handleError)
-      );
+    return this.http.put<Brand>(url, brand);
   }
 
   /**
@@ -60,9 +47,6 @@ export class BrandService extends ApiService {
    */
   deleteBrand(code: string): Observable<void> {
     const url = `${this.apiUrl}/${code}`;
-    return this.http.delete<void>(url)
-      .pipe(
-        catchError(this.handleError)
-      );
+    return this.http.delete<void>(url);
   }
 }

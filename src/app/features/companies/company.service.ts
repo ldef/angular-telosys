@@ -3,12 +3,11 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { Company } from './company';
-import { ApiService } from '@shared/api';
 
 @Injectable({
   providedIn: 'root'
 })
-export class CompanyService extends ApiService {
+export class CompanyService {
   private readonly apiUrl = 'api/companies';
 
   http = inject(HttpClient);
@@ -17,10 +16,7 @@ export class CompanyService extends ApiService {
    * Get all companies
    */
   getCompanies(): Observable<Company[]> {
-    return this.http.get<Company[]>(this.apiUrl)
-      .pipe(
-        catchError(this.handleError)
-      );
+    return this.http.get<Company[]>(this.apiUrl);
   }
 
   /**
@@ -28,20 +24,14 @@ export class CompanyService extends ApiService {
    */
   getCompany(id: number): Observable<Company> {
     const url = `${this.apiUrl}/${id}`;
-    return this.http.get<Company>(url)
-      .pipe(
-        catchError(this.handleError)
-      );
+    return this.http.get<Company>(url);
   }
 
   /**
    * Create a new company
    */
   createCompany(company: Omit<Company, 'id'>): Observable<Company> {
-    return this.http.post<Company>(this.apiUrl, company)
-      .pipe(
-        catchError(this.handleError)
-      );
+    return this.http.post<Company>(this.apiUrl, company);
   }
 
   /**
@@ -49,10 +39,7 @@ export class CompanyService extends ApiService {
    */
   updateCompany(company: Company): Observable<Company> {
     const url = `${this.apiUrl}/${company.id}`;
-    return this.http.put<Company>(url, company)
-      .pipe(
-        catchError(this.handleError)
-      );
+    return this.http.put<Company>(url, company);
   }
 
   /**
@@ -60,9 +47,6 @@ export class CompanyService extends ApiService {
    */
   deleteCompany(id: number): Observable<void> {
     const url = `${this.apiUrl}/${id}`;
-    return this.http.delete<void>(url)
-      .pipe(
-        catchError(this.handleError)
-      );
+    return this.http.delete<void>(url);
   }
 }
