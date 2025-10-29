@@ -4,7 +4,6 @@ import { RouterLink, Router } from '@angular/router';
 
 import { Company } from '../company';
 import { CompanyService } from '../company.service';
-import { catchError } from 'rxjs';
 
 @Component({
   selector: 'app-companies',
@@ -14,7 +13,6 @@ import { catchError } from 'rxjs';
 export class CompaniesComponent implements OnInit {
   companies = signal<Company[]>([]);
   loading = signal(true);
-  error = signal<string | null>(null);
 
   companyService = inject(CompanyService);
   router = inject(Router);
@@ -36,13 +34,7 @@ export class CompaniesComponent implements OnInit {
 
   deleteCompany(id: number): void {
     if (confirm('Are you sure you want to delete this company?')) {
-      this.companyService.deleteCompany(id).pipe(
-        catchError((error) => {
-          this.error.set(error.message || 'Failed to delete company');
-          console.error('Error deleting company:', error);
-          throw error;
-        })
-      ).subscribe(() => {
+      this.companyService.deleteCompany(id).subscribe(() => {
         const currentCompanies = this.companies();
         this.companies.set(currentCompanies.filter(company => company.id !== id));
       });

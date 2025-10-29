@@ -3,7 +3,6 @@ import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
 import { CompanyService } from '../company.service';
-import { catchError } from 'rxjs';
 
 @Component({
   selector: 'app-company-form',
@@ -13,7 +12,6 @@ import { catchError } from 'rxjs';
 })
 export class CompanyFormComponent implements OnInit {
   companyForm: FormGroup = null!;
-  submitError: string | null = null;
   companyId: number | null = null;
   isEditMode = false;
   isSubmitting = false;
@@ -52,21 +50,13 @@ export class CompanyFormComponent implements OnInit {
   onSubmit(): void {
     if (this.companyForm.valid && !this.isSubmitting) {
       this.isSubmitting = true;
-      this.submitError = null;
 
       const formValue = this.companyForm.value;
       const endpoint = this.isEditMode
         ? this.companyService.updateCompany({ ...formValue, id: this.companyId })
         : this.companyService.createCompany(formValue);
 
-      endpoint.pipe(
-        catchError((error) => {
-          this.isSubmitting = false;
-          this.submitError = error.message || 'An error occurred while submitting the form.';
-          console.error('Error submitting form:', error);
-          throw error;
-        })
-      ).subscribe(() => {
+      endpoint.subscribe(() => {
         this.isSubmitting = false;
         this.router.navigate(['/companies']);
       });

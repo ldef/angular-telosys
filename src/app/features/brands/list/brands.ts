@@ -4,7 +4,6 @@ import { RouterLink, Router } from '@angular/router';
 
 import { Brand } from '../brand';
 import { BrandService } from '../brand.service';
-import { catchError } from 'rxjs';
 
 @Component({
   selector: 'app-brands',
@@ -15,7 +14,6 @@ import { catchError } from 'rxjs';
 export class BrandsComponent implements OnInit {
   brands = signal<Brand[]>([]);
   loading = signal(true);
-  error = signal<string | null>(null);
 
   brandService = inject(BrandService);
   router = inject(Router);
@@ -37,13 +35,7 @@ export class BrandsComponent implements OnInit {
 
   deleteBrand(code: string): void {
     if (confirm('Are you sure you want to delete this brand?')) {
-      this.brandService.deleteBrand(code).pipe(
-        catchError((error) => {
-          this.error.set(error.message || 'Failed to delete brand');
-          console.error('Error deleting brand:', error);
-          throw error;
-        })
-      ).subscribe(() => {
+      this.brandService.deleteBrand(code).subscribe(() => {
         const currentBrands = this.brands();
         this.brands.set(currentBrands.filter(brand => brand.code !== code));
       });

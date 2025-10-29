@@ -5,7 +5,7 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { BrandService } from '../brand.service';
 import { Brand } from '../brand';
 import { Company } from '../../companies/company';
-import { catchError, forkJoin } from 'rxjs';
+import { forkJoin } from 'rxjs';
 import { CompanyService } from '@features/companies/company.service';
 
 @Component({
@@ -16,7 +16,6 @@ import { CompanyService } from '@features/companies/company.service';
 })
 export class BrandFormComponent implements OnInit {
   brandForm: FormGroup = null!;
-  submitError: string | null = null;
   brandCode: string | null = null;
   isEditMode = false;
   isSubmitting = false;
@@ -94,13 +93,11 @@ export class BrandFormComponent implements OnInit {
   onSubmit(): void {
     if (this.brandForm.valid && !this.isSubmitting) {
       this.isSubmitting = true;
-      this.submitError = null;
 
       const formValue = this.brandForm.getRawValue(); // getRawValue to include disabled fields
       const selectedCompany = this.companies().find(c => c.id === +formValue.companyId);
 
       if (!selectedCompany) {
-        this.submitError = 'Selected company not found';
         this.isSubmitting = false;
         return;
       }
@@ -122,14 +119,7 @@ export class BrandFormComponent implements OnInit {
         endpoint = this.brandService.createBrand(createData);
       }
 
-      endpoint.pipe(
-        catchError((error) => {
-          this.isSubmitting = false;
-          this.submitError = error.message || 'An error occurred while submitting the form.';
-          console.error('Error submitting form:', error);
-          throw error;
-        })
-      ).subscribe(() => {
+      endpoint.subscribe(() => {
         this.isSubmitting = false;
         this.router.navigate(['/brands']);
       });
