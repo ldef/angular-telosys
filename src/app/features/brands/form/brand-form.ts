@@ -5,7 +5,6 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { BrandService } from '../brand.service';
 import { Brand } from '../brand';
 import { Company } from '../../companies/company';
-import { forkJoin } from 'rxjs';
 import { CompanyService } from '@features/companies/company.service';
 
 @Component({
@@ -16,11 +15,9 @@ import { CompanyService } from '@features/companies/company.service';
 })
 export class BrandFormComponent implements OnInit {
   brandForm: FormGroup = null!;
-  brandCode: string | null = null;
   isEditMode = false;
   isSubmitting = false;
 
-  companies = signal<Company[]>([]);
   loading = signal(true);
 
   fb = inject(FormBuilder);
@@ -28,63 +25,26 @@ export class BrandFormComponent implements OnInit {
   companyService = inject(CompanyService);
   router = inject(Router);
   route = inject(ActivatedRoute);
+  brand: Brand = this.route.snapshot.data['brand'];
+  companies: Company[] = this.route.snapshot.data['company'];
 
   ngOnInit(): void {
     this.brandForm = this.createForm();
-
-    // Check if we're in edit mode
-    const code = this.route.snapshot.paramMap.get('code');
-    if (code) {
-      this.brandCode = code;
-      this.isEditMode = true;
-    }
-
-    // Load companies and brand data if in edit mode
-    this.loadInitialData();
-  }
-
-  private loadInitialData(): void {
-    const companies = this.companyService.getCompanies();
-    const brand = this.isEditMode ? this.brandService.getBrand(this.brandCode!) : null;
-
-    if (brand) {
-      forkJoin({ companies, brand }).subscribe(({ companies, brand }) => {
-        this.companies.set(companies);
-        this.populateForm(brand);
-        this.loading.set(false);
-      });
-    } else {
-      companies.subscribe((companies) => {
-        this.companies.set(companies);
-        this.loading.set(false);
-      });
-    }
-  }
-
-  private populateForm(brand: Brand): void {
-    this.brandForm.patchValue({
-      code: brand.code,
-      name: brand.name,
-      companyId: brand.company.id
-    });
-
-    // In edit mode, disable the code field since it's the primary key
-    if (this.isEditMode) {
-      this.brandForm.get('code')?.disable();
-    }
+    this.isEditMode = !!this.brand;
+    this.loading.set(false);
   }
 
   private createForm(): FormGroup {
     return this.fb.group({
-      code: ['', [
+      code: [this.brand?.code || '', [
         Validators.required,
         Validators.maxLength(3)
       ]],
-      name: ['', [
+      name: [this.brand?.name || '', [
         Validators.required,
         Validators.maxLength(20)
       ]],
-      companyId: ['', [
+      companyId: [this.brand?.company.id || '', [
         Validators.required
       ]]
     });
@@ -95,7 +55,7 @@ export class BrandFormComponent implements OnInit {
       this.isSubmitting = true;
 
       const formValue = this.brandForm.getRawValue(); // getRawValue to include disabled fields
-      const selectedCompany = this.companies().find(c => c.id === +formValue.companyId);
+      const selectedCompany = this.companies.find(c => c.id === +formValue.companyId);
 
       if (!selectedCompany) {
         this.isSubmitting = false;
@@ -103,20 +63,16 @@ export class BrandFormComponent implements OnInit {
       }
 
       let endpoint;
-      if (this.isEditMode) {
-        const updateData: Brand = {
+        const data: Brand = {
+          id: this.brand?.id,
           code: formValue.code,
           name: formValue.name,
           company: selectedCompany
         };
-        endpoint = this.brandService.updateBrand(updateData);
+      if (this.isEditMode) {
+        endpoint = this.brandService.updateBrand(data);
       } else {
-        const createData: Brand = {
-          code: formValue.code.toUpperCase(), // Convert to uppercase for consistency
-          name: formValue.name,
-          company: selectedCompany
-        };
-        endpoint = this.brandService.createBrand(createData);
+        endpoint = this.brandService.createBrand(data);
       }
 
       endpoint.subscribe(() => {

@@ -29,15 +29,15 @@ export class BrandsComponent implements OnInit {
     });
   }
 
-  editBrand(code: string): void {
-    this.router.navigate(['/brands/edit', code]);
+  editBrand(id: number): void {
+    this.router.navigate(['/brands/edit', id]);
   }
 
-  deleteBrand(code: string): void {
+  deleteBrand(id: number): void {
     if (confirm('Are you sure you want to delete this brand?')) {
-      this.brandService.deleteBrand(code).subscribe(() => {
+      this.brandService.deleteBrand(id).subscribe(() => {
         const currentBrands = this.brands();
-        this.brands.set(currentBrands.filter(brand => brand.code !== code));
+        this.brands.set(currentBrands.filter(brand => brand.id !== id));
       });
     }
   }

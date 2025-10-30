@@ -21,9 +21,7 @@
   <tbody>
     @for(brand of brands(); track brand.code) {
       <tr>
-        <td>
-          <span class="badge bg-primary">{{ brand.code }}</span>
-        </td>
+        <td>{{ brand.code }}</td>
         <td>{{ brand.name }}</td>
         <td>{{ brand.company.name }}</td>
         <td>
@@ -31,14 +29,14 @@
             <button 
               type="button" 
               class="btn btn-outline-primary"
-              (click)="editBrand(brand.code)"
+              (click)="editBrand(brand.id)"
               title="Edit Brand">
               Edit
             </button>
             <button 
               type="button" 
               class="btn btn-outline-danger"
-              (click)="deleteBrand(brand.code)"
+              (click)="deleteBrand(brand.id)"
               title="Delete Brand">
               Delete
             </button>

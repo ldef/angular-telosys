@@ -12,7 +12,6 @@ import { CompanyService } from '../company.service';
 })
 export class CompanyFormComponent implements OnInit {
   companyForm: FormGroup = null!;
-  companyId: number | null = null;
   isEditMode = false;
   isSubmitting = false;
 
@@ -20,27 +19,16 @@ export class CompanyFormComponent implements OnInit {
   companyService = inject(CompanyService);
   router = inject(Router);
   route = inject(ActivatedRoute);
+  company = this.route.snapshot.data['company'];
 
   ngOnInit(): void {
     this.companyForm = this.createForm();
-    // Check if we're in edit mode
-    const id = this.route.snapshot.paramMap.get('id');
-    if (id) {
-      this.companyId = +id;
-      this.isEditMode = true;
-      this.loadCompany(this.companyId);
-    }
-  }
-
-  private loadCompany(id: number): void {
-    this.companyService.getCompany(id).subscribe((company) => {
-      this.companyForm.patchValue(company);
-    });
+    this.isEditMode = !!this.company;
   }
 
   private createForm(): FormGroup {
     return this.fb.group({
-      name: ['', [
+      name: [this.company?.name || '', [
         Validators.required,
         Validators.maxLength(20)
       ]]
@@ -48,19 +36,17 @@ export class CompanyFormComponent implements OnInit {
   }
 
   onSubmit(): void {
-    if (this.companyForm.valid && !this.isSubmitting) {
-      this.isSubmitting = true;
+    this.isSubmitting = true;
 
-      const formValue = this.companyForm.value;
-      const endpoint = this.isEditMode
-        ? this.companyService.updateCompany({ ...formValue, id: this.companyId })
-        : this.companyService.createCompany(formValue);
+    const formValue = this.companyForm.value;
+    const endpoint = this.isEditMode
+      ? this.companyService.updateCompany({ ...formValue, id: this.company.id })
+      : this.companyService.createCompany(formValue);
 
-      endpoint.subscribe(() => {
-        this.isSubmitting = false;
-        this.router.navigate(['/companies']);
-      });
-    }
+    endpoint.subscribe(() => {
+      this.isSubmitting = false;
+      this.router.navigate(['/companies']);
+    });
   }
 
   onCancel(): void {

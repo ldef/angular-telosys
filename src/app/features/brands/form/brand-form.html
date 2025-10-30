@@ -52,7 +52,7 @@
             class="form-select"
             formControlName="companyId">
             <option value="">Select a company</option>
-            @for(company of companies(); track company.id) {
+            @for(company of companies; track company.id) {
               <option [value]="company.id">{{ company.name }}</option>
             }
           </select>

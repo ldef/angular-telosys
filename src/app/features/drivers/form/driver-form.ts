@@ -12,7 +12,6 @@ import { DriverService } from '../driver.service';
 })
 export class DriverFormComponent implements OnInit {
   driverForm: FormGroup = null!;
-  driverId: number | null = null;
   isEditMode = false;
   isSubmitting = false;
 
@@ -20,36 +19,24 @@ export class DriverFormComponent implements OnInit {
   driverService = inject(DriverService);
   router = inject(Router);
   route = inject(ActivatedRoute);
+  driver = this.route.snapshot.data['driver'];
 
   ngOnInit(): void {
     this.driverForm = this.createForm();
-    // Check if we're in edit mode
-    const id = this.route.snapshot.paramMap.get('id');
-    if (id) {
-      this.driverId = +id;
-      this.isEditMode = true;
-      this.loadDriver(this.driverId);
-    }
-  }
-
-  private loadDriver(id: number): void {
-    this.driverService.getDriver(id).subscribe((driver) => {
-      const birthDate = new Date(driver.birthDate).toISOString().substring(0, 10);
-      this.driverForm.patchValue({ ...driver, birthDate });
-    });
+    this.isEditMode = !!this.driver;
   }
 
   private createForm(): FormGroup {
     return this.fb.group({
-      firstName: ['', [
+      firstName: [this.driver?.firstName || '', [
         Validators.required,
         Validators.maxLength(20)
       ]],
-      lastName: ['', [
+      lastName: [this.driver?.lastName || '', [
         Validators.required,
         Validators.maxLength(20)
       ]],
-      birthDate: ['', [
+      birthDate: [this.driver?.birthDate || '', [
         Validators.required
       ]],
       certified: [false]
@@ -63,7 +50,7 @@ export class DriverFormComponent implements OnInit {
       const formValue = this.driverForm.value;
       formValue.birthDate = new Date(formValue.birthDate);
       const endpoint = this.isEditMode
-        ? this.driverService.updateDriver({ ...formValue, id: this.driverId })
+        ? this.driverService.updateDriver({ ...formValue, id: this.driver.id })
         : this.driverService.createDriver(formValue);
 
       endpoint.subscribe(() => {

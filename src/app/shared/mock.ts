@@ -29,12 +29,12 @@ export class MockService implements InMemoryDbService {
       { id: 4, name: 'Porsche SE' }
     ];
     const brands: Brand[] = [
-      { code: 'Pgt', name: 'Peugeot', company: companies[0] },
-      { code: 'Cit', name: 'Citroën', company: companies[0] },
-      { code: 'Che', name: 'Chevrolet', company: companies[1] },
-      { code: 'Cad', name: 'Cadillac', company: companies[1] },
-      { code: 'For', name: 'Ford', company: companies[2] },
-      { code: 'Pse', name: 'Porsche', company: companies[3] }
+      { id: 1, code: 'Pgt', name: 'Peugeot', company: companies[0] },
+      { id: 2, code: 'Cit', name: 'Citroën', company: companies[0] },
+      { id: 3, code: 'Che', name: 'Chevrolet', company: companies[1] },
+      { id: 4, code: 'Cad', name: 'Cadillac', company: companies[1] },
+      { id: 5, code: 'For', name: 'Ford', company: companies[2] },
+      { id: 6, code: 'Pse', name: 'Porsche', company: companies[3] }
     ];
     return {drivers, companies, brands};
   }

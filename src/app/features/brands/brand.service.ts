@@ -19,10 +19,10 @@ export class BrandService {
   }
 
   /**
-   * Get brand by code
+   * Get brand by id
    */
-  getBrand(code: string): Observable<Brand> {
-    const url = `${this.apiUrl}/${code}`;
+  getBrand(id: number): Observable<Brand> {
+    const url = `${this.apiUrl}/${id}`;
     return this.http.get<Brand>(url);
   }
 
@@ -36,16 +36,16 @@ export class BrandService {
   /**
    * Update an existing brand
    */
-  updateBrand(brand: Brand, ): Observable<Brand> {
-    const url = `${this.apiUrl}/${brand.code}`;
+  updateBrand(brand: Brand): Observable<Brand> {
+    const url = `${this.apiUrl}/${brand.id}`;
     return this.http.put<Brand>(url, brand);
   }
 
   /**
    * Delete a brand
    */
-  deleteBrand(code: string): Observable<void> {
-    const url = `${this.apiUrl}/${code}`;
+  deleteBrand(id: number): Observable<void> {
+    const url = `${this.apiUrl}/${id}`;
     return this.http.delete<void>(url);
   }
 }
