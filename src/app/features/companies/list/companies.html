@@ -8,9 +8,9 @@
       <span class="sr-only"></span>
     </div>
   </div>
-} @else {
+}
 
-<table class="table table-striped mt-3">
+<table class="table table-striped mt-3" [class.d-none]="loading()">
   <thead>
     <tr>
       <th>ID</th>
@@ -19,7 +19,7 @@
     </tr>
   </thead>
   <tbody>
-    @for(company of companies(); track company.id) {
+    @for(company of companies | async; track company.id) {
       <tr>
         <td>{{ company.id }}</td>
         <td>{{ company.name }}</td>
@@ -45,4 +45,3 @@
     }
   </tbody>
 </table>
-}

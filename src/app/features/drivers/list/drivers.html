@@ -2,55 +2,54 @@
   <span class="h2">Drivers Management</span>
   <button type="button" class="btn btn-primary" routerLink="/drivers/new">Add New Driver</button>
 </div>
-  @if(loading()) {
-    <div class="d-flex justify-content-center">
-      <div class="spinner-border" role="status">
-        <span class="sr-only"></span>
-      </div>
+@if(loading()) {
+  <div class="d-flex justify-content-center">
+    <div class="spinner-border" role="status">
+      <span class="sr-only"></span>
     </div>
-  } @else {
-
-  <table class="table table-striped mt-3">
-    <thead>
-      <tr>
-        <th>ID</th>
-        <th>Name</th>
-        <th>Birth Date</th>
-        <th>Certified</th>
-        <th>Actions</th>
-      </tr>
-    </thead>
-    <tbody>
-      @for(driver of drivers(); track driver.id) {
-        <tr>
-          <td>{{ driver.id }}</td>
-          <td>{{ driver.firstName }} {{ driver.lastName }}</td>
-          <td>{{ driver.birthDate | date:'shortDate' }}</td>
-          <td>
-            <span>
-              {{ driver.certified ? 'Certified' : 'Not Certified' }}
-            </span>
-          </td>
-          <td>
-            <div class="btn-group btn-group-sm" role="group">
-              <button 
-                type="button" 
-                class="btn btn-outline-primary"
-                (click)="editDriver(driver.id)"
-                title="Edit Driver">
-                Edit
-              </button>
-              <button 
-                type="button" 
-                class="btn btn-outline-danger"
-                (click)="deleteDriver(driver.id)"
-                title="Delete Driver">
-                Delete
-              </button>
-            </div>
-          </td>
-        </tr>
-      }
-    </tbody>
-  </table>
+  </div>
 }
+
+<table class="table table-striped mt-3" [class.d-none]="loading()">
+  <thead>
+    <tr>
+      <th>ID</th>
+      <th>Name</th>
+      <th>Birth Date</th>
+      <th>Certified</th>
+      <th>Actions</th>
+    </tr>
+  </thead>
+  <tbody>
+    @for(driver of drivers | async; track driver.id) {
+      <tr>
+        <td>{{ driver.id }}</td>
+        <td>{{ driver.firstName }} {{ driver.lastName }}</td>
+        <td>{{ driver.birthDate | date:'shortDate' }}</td>
+        <td>
+          <span>
+            {{ driver.certified ? 'Certified' : 'Not Certified' }}
+          </span>
+        </td>
+        <td>
+          <div class="btn-group btn-group-sm" role="group">
+            <button 
+              type="button" 
+              class="btn btn-outline-primary"
+              (click)="editDriver(driver.id)"
+              title="Edit Driver">
+              Edit
+            </button>
+            <button 
+              type="button" 
+              class="btn btn-outline-danger"
+              (click)="deleteDriver(driver.id)"
+              title="Delete Driver">
+              Delete
+            </button>
+          </div>
+        </td>
+      </tr>
+    }
+  </tbody>
+</table>

@@ -1,32 +1,28 @@
-import { Component, inject, OnInit, signal } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink, Router } from '@angular/router';
 
-import { Driver } from '../driver';
 import { DriverService } from '../driver.service';
+import { BehaviorSubject, finalize, switchMap, tap } from 'rxjs';
 
 @Component({
   selector: 'app-drivers',
   imports: [CommonModule, RouterLink],
   templateUrl: './drivers.html'
 })
-export class DriversComponent implements OnInit {
-  drivers = signal<Driver[]>([]);
-  loading = signal(true);
-
+export class DriversComponent {
   driverService = inject(DriverService);
   router = inject(Router);
 
-  ngOnInit(): void {
-    this.loadDrivers();
-  }
+  loading = signal(true);
+  private refresh$ = new BehaviorSubject<void>(undefined);
 
-  loadDrivers(): void {    
-    this.driverService.getDrivers().subscribe((drivers) => {
-      this.drivers.set(drivers);
-      this.loading.set(false);
-    });
-  }
+  drivers = this.refresh$.pipe(
+    tap(() => this.loading.set(true)),
+    switchMap(() => this.driverService.getDrivers().pipe(
+      finalize(() => this.loading.set(false))
+    )),
+  );
 
   editDriver(id: number): void {
     this.router.navigate(['/drivers/edit', id]);
@@ -35,8 +31,7 @@ export class DriversComponent implements OnInit {
   deleteDriver(id: number): void {
     if (confirm('Are you sure you want to delete this driver?')) {
       this.driverService.deleteDriver(id).subscribe(() => {
-        const currentDrivers = this.drivers();
-        this.drivers.set(currentDrivers.filter(driver => driver.id !== id));
+        this.refresh$.next();
       });
     }
   }

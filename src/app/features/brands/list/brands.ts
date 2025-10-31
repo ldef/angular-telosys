@@ -1,9 +1,9 @@
-import { ChangeDetectionStrategy, Component, inject, OnInit, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink, Router } from '@angular/router';
 
-import { Brand } from '../brand';
 import { BrandService } from '../brand.service';
+import { BehaviorSubject, finalize, switchMap, tap } from 'rxjs';
 
 @Component({
   selector: 'app-brands',
@@ -11,23 +11,19 @@ import { BrandService } from '../brand.service';
   templateUrl: './brands.html',
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class BrandsComponent implements OnInit {
-  brands = signal<Brand[]>([]);
-  loading = signal(true);
-
+export class BrandsComponent {
   brandService = inject(BrandService);
   router = inject(Router);
 
-  ngOnInit(): void {
-    this.loadBrands();
-  }
+  loading = signal(true);
+  private refresh$ = new BehaviorSubject<void>(undefined);
 
-  loadBrands(): void {    
-    this.brandService.getBrands().subscribe((brands) => {
-      this.brands.set(brands);
-      this.loading.set(false);
-    });
-  }
+  brands = this.refresh$.pipe(
+    tap(() => this.loading.set(true)),
+    switchMap(() => this.brandService.getBrands().pipe(
+      finalize(() => this.loading.set(false))
+    )),
+  );
 
   editBrand(id: number): void {
     this.router.navigate(['/brands/edit', id]);
@@ -36,8 +32,7 @@ export class BrandsComponent implements OnInit {
   deleteBrand(id: number): void {
     if (confirm('Are you sure you want to delete this brand?')) {
       this.brandService.deleteBrand(id).subscribe(() => {
-        const currentBrands = this.brands();
-        this.brands.set(currentBrands.filter(brand => brand.id !== id));
+        this.refresh$.next();
       });
     }
   }
