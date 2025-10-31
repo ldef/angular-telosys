@@ -12,7 +12,7 @@ import { finalize } from 'rxjs';
   templateUrl: './driver-form.html'
 })
 export class DriverFormComponent {
-  driverForm: FormGroup = null!;
+  driverForm: FormGroup;
   isSubmitting = signal<boolean>(false);
 
   fb = inject(FormBuilder);

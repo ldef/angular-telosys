@@ -12,7 +12,7 @@ import { finalize } from 'rxjs';
   templateUrl: './company-form.html'
 })
 export class CompanyFormComponent {
-  companyForm: FormGroup = null!;
+  companyForm: FormGroup;
   isSubmitting = signal<boolean>(false);
 
   fb = inject(FormBuilder);
