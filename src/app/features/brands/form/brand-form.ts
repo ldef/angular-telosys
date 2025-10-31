@@ -40,29 +40,25 @@ export class BrandFormComponent {
         Validators.required,
         Validators.maxLength(20)
       ]],
-      companyId: [this.brand?.company.id || '', [
+      company: [this.brand?.company || '', [
         Validators.required
       ]]
     });
   }
 
+  compareCompanies(c1: Company, c2: Company): boolean {
+    return c1 && c2 ? c1.id === c2.id : c1 === c2;
+  }
+
   onSubmit(): void {
     this.isSubmitting.set(true);
-
-    const formValue = this.brandForm.getRawValue(); // getRawValue to include disabled fields
-    const selectedCompany = this.companies.find(c => c.id === +formValue.companyId)!;
+    const formValue = this.brandForm.getRawValue();
 
     let endpoint;
-      const data: Brand = {
-        id: this.brand?.id,
-        code: formValue.code,
-        name: formValue.name,
-        company: selectedCompany
-      };
     if (this.brand) {
-      endpoint = this.brandService.updateBrand(data);
+      endpoint = this.brandService.updateBrand({id: this.brand.id, ...formValue});
     } else {
-      endpoint = this.brandService.createBrand(data);
+      endpoint = this.brandService.createBrand(formValue);
     }
 
     endpoint.pipe(
