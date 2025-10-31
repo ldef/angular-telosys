@@ -20,6 +20,6 @@ export const companiesResolver: ResolveFn<Company[]> = () => {
 
 export const routes: Routes = [
   { path: '', component: BrandsComponent },
-  { path: 'new', component: BrandFormComponent },
-  { path: 'edit/:id', component: BrandFormComponent, resolve: { brand: brandResolver, company: companiesResolver } }
+  { path: 'new', component: BrandFormComponent, resolve: { companies: companiesResolver } },
+  { path: 'edit/:id', component: BrandFormComponent, resolve: { brand: brandResolver, companies: companiesResolver } }
 ];

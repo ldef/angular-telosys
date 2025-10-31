@@ -1,5 +1,5 @@
 <div class="container-fluid p-4">
-  <h2 class="mb-4">{{ isEditMode ? 'Edit Company' : 'Create New Company' }}</h2>
+  <h2 class="mb-4">{{ company ? 'Edit Company' : 'Create New Company' }}</h2>
 
   <!-- Company Form -->
   <form [formGroup]="companyForm" (ngSubmit)="onSubmit()" novalidate>
@@ -24,18 +24,18 @@
         type="button"
         class="btn btn-secondary"
         (click)="onCancel()"
-        [disabled]="isSubmitting">
+        [disabled]="isSubmitting()">
         Cancel
       </button>
 
       <button
         type="submit"
         class="btn btn-primary"
-        [disabled]="companyForm.invalid || isSubmitting">
-        @if(isSubmitting) {
+        [disabled]="companyForm.invalid || isSubmitting()">
+        @if(isSubmitting()) {
           <span class="spinner-border spinner-border-sm me-2" role="status"></span>
         }
-        {{ isSubmitting ? (isEditMode ? 'Updating...' : 'Creating...') : (isEditMode ? 'Update Company' : 'Create Company') }}
+        {{ isSubmitting() ? (company ? 'Updating...' : 'Creating...') : (company ? 'Update Company' : 'Create Company') }}
       </button>
     </div>
   </form>

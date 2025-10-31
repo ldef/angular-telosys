@@ -1,5 +1,5 @@
 <div class="container-fluid p-4">
-  <h2 class="mb-4">{{ isEditMode ? 'Edit Driver' : 'Create New Driver' }}</h2>
+  <h2 class="mb-4">{{ driver ? 'Edit Driver' : 'Create New Driver' }}</h2>
 
   <!-- Driver Form -->
   <form [formGroup]="driverForm" (ngSubmit)="onSubmit()" novalidate>
@@ -66,18 +66,18 @@
         type="button"
         class="btn btn-secondary"
         (click)="onCancel()"
-        [disabled]="isSubmitting">
+        [disabled]="isSubmitting()">
         Cancel
       </button>
 
       <button
         type="submit"
         class="btn btn-primary"
-        [disabled]="driverForm.invalid || isSubmitting">
-        @if(isSubmitting) {
+        [disabled]="driverForm.invalid || isSubmitting()">
+        @if(isSubmitting()) {
           <span class="spinner-border spinner-border-sm me-2" role="status"></span>
         }
-        {{ isSubmitting ? (isEditMode ? 'Updating...' : 'Creating...') : (isEditMode ? 'Update Driver' : 'Create Driver') }}
+        {{ isSubmitting() ? (driver ? 'Updating...' : 'Creating...') : (driver ? 'Update Driver' : 'Create Driver') }}
       </button>
     </div>
   </form>

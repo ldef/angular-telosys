@@ -1,8 +1,9 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
 import { DriverService } from '../driver.service';
+import { finalize } from 'rxjs';
 
 @Component({
   selector: 'app-driver-form',
@@ -10,10 +11,9 @@ import { DriverService } from '../driver.service';
   imports: [CommonModule, ReactiveFormsModule],
   templateUrl: './driver-form.html'
 })
-export class DriverFormComponent implements OnInit {
+export class DriverFormComponent {
   driverForm: FormGroup = null!;
-  isEditMode = false;
-  isSubmitting = false;
+  isSubmitting = signal<boolean>(false);
 
   fb = inject(FormBuilder);
   driverService = inject(DriverService);
@@ -21,9 +21,8 @@ export class DriverFormComponent implements OnInit {
   route = inject(ActivatedRoute);
   driver = this.route.snapshot.data['driver'];
 
-  ngOnInit(): void {
+  constructor() {
     this.driverForm = this.createForm();
-    this.isEditMode = !!this.driver;
   }
 
   private createForm(): FormGroup {
@@ -44,20 +43,19 @@ export class DriverFormComponent implements OnInit {
   }
 
   onSubmit(): void {
-    if (this.driverForm.valid && !this.isSubmitting) {
-      this.isSubmitting = true;
+    this.isSubmitting.set(true);
 
-      const formValue = this.driverForm.value;
-      formValue.birthDate = new Date(formValue.birthDate);
-      const endpoint = this.isEditMode
-        ? this.driverService.updateDriver({ ...formValue, id: this.driver.id })
-        : this.driverService.createDriver(formValue);
+    const formValue = this.driverForm.value;
+    formValue.birthDate = new Date(formValue.birthDate);
+    const endpoint = this.driver
+      ? this.driverService.updateDriver({ ...formValue, id: this.driver.id })
+      : this.driverService.createDriver(formValue);
 
-      endpoint.subscribe(() => {
-        this.isSubmitting = false;
-        this.router.navigate(['/drivers']);
-      });
-    }
+    endpoint.pipe(
+      finalize(() => this.isSubmitting.set(false))
+    ).subscribe(() => {
+      this.router.navigate(['/drivers']);
+    });
   }
 
   onCancel(): void {

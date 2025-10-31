@@ -1,8 +1,9 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
 import { CompanyService } from '../company.service';
+import { finalize } from 'rxjs';
 
 @Component({
   selector: 'app-company-form',
@@ -10,10 +11,9 @@ import { CompanyService } from '../company.service';
   imports: [CommonModule, ReactiveFormsModule],
   templateUrl: './company-form.html'
 })
-export class CompanyFormComponent implements OnInit {
+export class CompanyFormComponent {
   companyForm: FormGroup = null!;
-  isEditMode = false;
-  isSubmitting = false;
+  isSubmitting = signal<boolean>(false);
 
   fb = inject(FormBuilder);
   companyService = inject(CompanyService);
@@ -21,9 +21,8 @@ export class CompanyFormComponent implements OnInit {
   route = inject(ActivatedRoute);
   company = this.route.snapshot.data['company'];
 
-  ngOnInit(): void {
+  constructor() {
     this.companyForm = this.createForm();
-    this.isEditMode = !!this.company;
   }
 
   private createForm(): FormGroup {
@@ -36,15 +35,16 @@ export class CompanyFormComponent implements OnInit {
   }
 
   onSubmit(): void {
-    this.isSubmitting = true;
+    this.isSubmitting.set(true);
 
     const formValue = this.companyForm.value;
-    const endpoint = this.isEditMode
+    const endpoint = this.company
       ? this.companyService.updateCompany({ ...formValue, id: this.company.id })
       : this.companyService.createCompany(formValue);
 
-    endpoint.subscribe(() => {
-      this.isSubmitting = false;
+    endpoint.pipe(
+      finalize(() => this.isSubmitting.set(false))
+    ).subscribe(() => {
       this.router.navigate(['/companies']);
     });
   }

@@ -1,11 +1,12 @@
-import { Component, inject, OnInit, signal } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
+import { CompanyService } from '@features/companies/company.service';
+import { finalize } from 'rxjs';
 import { BrandService } from '../brand.service';
 import { Brand } from '../brand';
 import { Company } from '../../companies/company';
-import { CompanyService } from '@features/companies/company.service';
 
 @Component({
   selector: 'app-brand-form',
@@ -13,12 +14,9 @@ import { CompanyService } from '@features/companies/company.service';
   imports: [CommonModule, ReactiveFormsModule],
   templateUrl: './brand-form.html'
 })
-export class BrandFormComponent implements OnInit {
-  brandForm: FormGroup = null!;
-  isEditMode = false;
-  isSubmitting = false;
-
-  loading = signal(true);
+export class BrandFormComponent {
+  brandForm: FormGroup;
+  isSubmitting = signal<boolean>(false);
 
   fb = inject(FormBuilder);
   brandService = inject(BrandService);
@@ -26,12 +24,10 @@ export class BrandFormComponent implements OnInit {
   router = inject(Router);
   route = inject(ActivatedRoute);
   brand: Brand = this.route.snapshot.data['brand'];
-  companies: Company[] = this.route.snapshot.data['company'];
+  companies: Company[] = this.route.snapshot.data['companies'];
 
-  ngOnInit(): void {
+  constructor() {
     this.brandForm = this.createForm();
-    this.isEditMode = !!this.brand;
-    this.loading.set(false);
   }
 
   private createForm(): FormGroup {
@@ -51,35 +47,29 @@ export class BrandFormComponent implements OnInit {
   }
 
   onSubmit(): void {
-    if (this.brandForm.valid && !this.isSubmitting) {
-      this.isSubmitting = true;
+    this.isSubmitting.set(true);
 
-      const formValue = this.brandForm.getRawValue(); // getRawValue to include disabled fields
-      const selectedCompany = this.companies.find(c => c.id === +formValue.companyId);
+    const formValue = this.brandForm.getRawValue(); // getRawValue to include disabled fields
+    const selectedCompany = this.companies.find(c => c.id === +formValue.companyId)!;
 
-      if (!selectedCompany) {
-        this.isSubmitting = false;
-        return;
-      }
-
-      let endpoint;
-        const data: Brand = {
-          id: this.brand?.id,
-          code: formValue.code,
-          name: formValue.name,
-          company: selectedCompany
-        };
-      if (this.isEditMode) {
-        endpoint = this.brandService.updateBrand(data);
-      } else {
-        endpoint = this.brandService.createBrand(data);
-      }
-
-      endpoint.subscribe(() => {
-        this.isSubmitting = false;
-        this.router.navigate(['/brands']);
-      });
+    let endpoint;
+      const data: Brand = {
+        id: this.brand?.id,
+        code: formValue.code,
+        name: formValue.name,
+        company: selectedCompany
+      };
+    if (this.brand) {
+      endpoint = this.brandService.updateBrand(data);
+    } else {
+      endpoint = this.brandService.createBrand(data);
     }
+
+    endpoint.pipe(
+      finalize(() => this.isSubmitting.set(false))
+    ).subscribe(() => {
+      this.router.navigate(['/brands']);
+    });
   }
 
   onCancel(): void {
