@@ -2,12 +2,13 @@ import { inject, Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Company } from './company';
+import { environment } from 'environments/environment.development';
 
 @Injectable({
   providedIn: 'root'
 })
 export class CompanyService {
-  private readonly apiUrl = 'api/companies';
+  private readonly apiUrl = environment.apiUrl + 'api/companies';
 
   http = inject(HttpClient);
 
